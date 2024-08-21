@@ -1,0 +1,266 @@
+
+counter_with_7seg.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001ca  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         0000000a  00800060  000001ca  0000023e  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .stab         0000039c  00000000  00000000  00000248  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      000006ad  00000000  00000000  000005e4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+   8:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+   c:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  10:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  14:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  18:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  1c:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  20:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  24:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  28:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  2c:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  30:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  34:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  38:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  3c:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  40:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  44:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  48:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  4c:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  50:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_copy_data>:
+  60:	10 e0       	ldi	r17, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	ea ec       	ldi	r30, 0xCA	; 202
+  68:	f1 e0       	ldi	r31, 0x01	; 1
+  6a:	02 c0       	rjmp	.+4      	; 0x70 <.do_copy_data_start>
+
+0000006c <.do_copy_data_loop>:
+  6c:	05 90       	lpm	r0, Z+
+  6e:	0d 92       	st	X+, r0
+
+00000070 <.do_copy_data_start>:
+  70:	aa 36       	cpi	r26, 0x6A	; 106
+  72:	b1 07       	cpc	r27, r17
+  74:	d9 f7       	brne	.-10     	; 0x6c <.do_copy_data_loop>
+  76:	0e 94 41 00 	call	0x82	; 0x82 <main>
+  7a:	0c 94 e3 00 	jmp	0x1c6	; 0x1c6 <_exit>
+
+0000007e <__bad_interrupt>:
+  7e:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000082 <main>:
+#define DDRB	*((u8*)0x37)
+#define PORTB	*((u8*)0x38)
+#define PINB	*((volatile u8*)0x36)
+
+int main()
+{
+  82:	df 93       	push	r29
+  84:	cf 93       	push	r28
+  86:	cd b7       	in	r28, 0x3d	; 61
+  88:	de b7       	in	r29, 0x3e	; 62
+  8a:	60 97       	sbiw	r28, 0x10	; 16
+  8c:	0f b6       	in	r0, 0x3f	; 63
+  8e:	f8 94       	cli
+  90:	de bf       	out	0x3e, r29	; 62
+  92:	0f be       	out	0x3f, r0	; 63
+  94:	cd bf       	out	0x3d, r28	; 61
+	u8 segcath[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f},count = 0;
+  96:	ce 01       	movw	r24, r28
+  98:	02 96       	adiw	r24, 0x02	; 2
+  9a:	9d 87       	std	Y+13, r25	; 0x0d
+  9c:	8c 87       	std	Y+12, r24	; 0x0c
+  9e:	e0 e6       	ldi	r30, 0x60	; 96
+  a0:	f0 e0       	ldi	r31, 0x00	; 0
+  a2:	ff 87       	std	Y+15, r31	; 0x0f
+  a4:	ee 87       	std	Y+14, r30	; 0x0e
+  a6:	fa e0       	ldi	r31, 0x0A	; 10
+  a8:	f8 8b       	std	Y+16, r31	; 0x10
+  aa:	ee 85       	ldd	r30, Y+14	; 0x0e
+  ac:	ff 85       	ldd	r31, Y+15	; 0x0f
+  ae:	00 80       	ld	r0, Z
+  b0:	8e 85       	ldd	r24, Y+14	; 0x0e
+  b2:	9f 85       	ldd	r25, Y+15	; 0x0f
+  b4:	01 96       	adiw	r24, 0x01	; 1
+  b6:	9f 87       	std	Y+15, r25	; 0x0f
+  b8:	8e 87       	std	Y+14, r24	; 0x0e
+  ba:	ec 85       	ldd	r30, Y+12	; 0x0c
+  bc:	fd 85       	ldd	r31, Y+13	; 0x0d
+  be:	00 82       	st	Z, r0
+  c0:	8c 85       	ldd	r24, Y+12	; 0x0c
+  c2:	9d 85       	ldd	r25, Y+13	; 0x0d
+  c4:	01 96       	adiw	r24, 0x01	; 1
+  c6:	9d 87       	std	Y+13, r25	; 0x0d
+  c8:	8c 87       	std	Y+12, r24	; 0x0c
+  ca:	98 89       	ldd	r25, Y+16	; 0x10
+  cc:	91 50       	subi	r25, 0x01	; 1
+  ce:	98 8b       	std	Y+16, r25	; 0x10
+  d0:	e8 89       	ldd	r30, Y+16	; 0x10
+  d2:	ee 23       	and	r30, r30
+  d4:	51 f7       	brne	.-44     	; 0xaa <main+0x28>
+  d6:	19 82       	std	Y+1, r1	; 0x01
+	DDRA &=~(1<<0); //pin0 is input
+  d8:	aa e3       	ldi	r26, 0x3A	; 58
+  da:	b0 e0       	ldi	r27, 0x00	; 0
+  dc:	ea e3       	ldi	r30, 0x3A	; 58
+  de:	f0 e0       	ldi	r31, 0x00	; 0
+  e0:	80 81       	ld	r24, Z
+  e2:	8e 7f       	andi	r24, 0xFE	; 254
+  e4:	8c 93       	st	X, r24
+	DDRA &=~(1<<1); //pin1 is input
+  e6:	aa e3       	ldi	r26, 0x3A	; 58
+  e8:	b0 e0       	ldi	r27, 0x00	; 0
+  ea:	ea e3       	ldi	r30, 0x3A	; 58
+  ec:	f0 e0       	ldi	r31, 0x00	; 0
+  ee:	80 81       	ld	r24, Z
+  f0:	8d 7f       	andi	r24, 0xFD	; 253
+  f2:	8c 93       	st	X, r24
+	PORTA |=(1<<0);// sw is pulled up;
+  f4:	ab e3       	ldi	r26, 0x3B	; 59
+  f6:	b0 e0       	ldi	r27, 0x00	; 0
+  f8:	eb e3       	ldi	r30, 0x3B	; 59
+  fa:	f0 e0       	ldi	r31, 0x00	; 0
+  fc:	80 81       	ld	r24, Z
+  fe:	81 60       	ori	r24, 0x01	; 1
+ 100:	8c 93       	st	X, r24
+	PORTA |=(1<<1);// sw is pulled up;
+ 102:	ab e3       	ldi	r26, 0x3B	; 59
+ 104:	b0 e0       	ldi	r27, 0x00	; 0
+ 106:	eb e3       	ldi	r30, 0x3B	; 59
+ 108:	f0 e0       	ldi	r31, 0x00	; 0
+ 10a:	80 81       	ld	r24, Z
+ 10c:	82 60       	ori	r24, 0x02	; 2
+ 10e:	8c 93       	st	X, r24
+	DDRB = 0xff;
+ 110:	e7 e3       	ldi	r30, 0x37	; 55
+ 112:	f0 e0       	ldi	r31, 0x00	; 0
+ 114:	8f ef       	ldi	r24, 0xFF	; 255
+ 116:	80 83       	st	Z, r24
+	PORTB = segcath[count];//start up view
+ 118:	a8 e3       	ldi	r26, 0x38	; 56
+ 11a:	b0 e0       	ldi	r27, 0x00	; 0
+ 11c:	89 81       	ldd	r24, Y+1	; 0x01
+ 11e:	28 2f       	mov	r18, r24
+ 120:	30 e0       	ldi	r19, 0x00	; 0
+ 122:	ce 01       	movw	r24, r28
+ 124:	02 96       	adiw	r24, 0x02	; 2
+ 126:	fc 01       	movw	r30, r24
+ 128:	e2 0f       	add	r30, r18
+ 12a:	f3 1f       	adc	r31, r19
+ 12c:	80 81       	ld	r24, Z
+ 12e:	8c 93       	st	X, r24
+	while(1)
+	{
+		if(!((PINA>>0)&1))//add
+ 130:	e9 e3       	ldi	r30, 0x39	; 57
+ 132:	f0 e0       	ldi	r31, 0x00	; 0
+ 134:	80 81       	ld	r24, Z
+ 136:	88 2f       	mov	r24, r24
+ 138:	90 e0       	ldi	r25, 0x00	; 0
+ 13a:	81 70       	andi	r24, 0x01	; 1
+ 13c:	90 70       	andi	r25, 0x00	; 0
+ 13e:	00 97       	sbiw	r24, 0x00	; 0
+ 140:	d9 f4       	brne	.+54     	; 0x178 <main+0xf6>
+		{
+			if(count == 9)
+ 142:	89 81       	ldd	r24, Y+1	; 0x01
+ 144:	89 30       	cpi	r24, 0x09	; 9
+ 146:	a1 f3       	breq	.-24     	; 0x130 <main+0xae>
+				continue;
+			PORTB = segcath[++count];
+ 148:	a8 e3       	ldi	r26, 0x38	; 56
+ 14a:	b0 e0       	ldi	r27, 0x00	; 0
+ 14c:	89 81       	ldd	r24, Y+1	; 0x01
+ 14e:	8f 5f       	subi	r24, 0xFF	; 255
+ 150:	89 83       	std	Y+1, r24	; 0x01
+ 152:	89 81       	ldd	r24, Y+1	; 0x01
+ 154:	28 2f       	mov	r18, r24
+ 156:	30 e0       	ldi	r19, 0x00	; 0
+ 158:	ce 01       	movw	r24, r28
+ 15a:	02 96       	adiw	r24, 0x02	; 2
+ 15c:	fc 01       	movw	r30, r24
+ 15e:	e2 0f       	add	r30, r18
+ 160:	f3 1f       	adc	r31, r19
+ 162:	80 81       	ld	r24, Z
+ 164:	8c 93       	st	X, r24
+			while(!((PINA>>0)&1));
+ 166:	e9 e3       	ldi	r30, 0x39	; 57
+ 168:	f0 e0       	ldi	r31, 0x00	; 0
+ 16a:	80 81       	ld	r24, Z
+ 16c:	88 2f       	mov	r24, r24
+ 16e:	90 e0       	ldi	r25, 0x00	; 0
+ 170:	81 70       	andi	r24, 0x01	; 1
+ 172:	90 70       	andi	r25, 0x00	; 0
+ 174:	00 97       	sbiw	r24, 0x00	; 0
+ 176:	b9 f3       	breq	.-18     	; 0x166 <main+0xe4>
+		}
+		if(!((PINA>>1)&1))//sub
+ 178:	e9 e3       	ldi	r30, 0x39	; 57
+ 17a:	f0 e0       	ldi	r31, 0x00	; 0
+ 17c:	80 81       	ld	r24, Z
+ 17e:	86 95       	lsr	r24
+ 180:	88 2f       	mov	r24, r24
+ 182:	90 e0       	ldi	r25, 0x00	; 0
+ 184:	81 70       	andi	r24, 0x01	; 1
+ 186:	90 70       	andi	r25, 0x00	; 0
+ 188:	00 97       	sbiw	r24, 0x00	; 0
+ 18a:	91 f6       	brne	.-92     	; 0x130 <main+0xae>
+		{
+			if(count == 0)
+ 18c:	89 81       	ldd	r24, Y+1	; 0x01
+ 18e:	88 23       	and	r24, r24
+ 190:	79 f2       	breq	.-98     	; 0x130 <main+0xae>
+				continue;
+			PORTB = segcath[--count];
+ 192:	a8 e3       	ldi	r26, 0x38	; 56
+ 194:	b0 e0       	ldi	r27, 0x00	; 0
+ 196:	89 81       	ldd	r24, Y+1	; 0x01
+ 198:	81 50       	subi	r24, 0x01	; 1
+ 19a:	89 83       	std	Y+1, r24	; 0x01
+ 19c:	89 81       	ldd	r24, Y+1	; 0x01
+ 19e:	28 2f       	mov	r18, r24
+ 1a0:	30 e0       	ldi	r19, 0x00	; 0
+ 1a2:	ce 01       	movw	r24, r28
+ 1a4:	02 96       	adiw	r24, 0x02	; 2
+ 1a6:	fc 01       	movw	r30, r24
+ 1a8:	e2 0f       	add	r30, r18
+ 1aa:	f3 1f       	adc	r31, r19
+ 1ac:	80 81       	ld	r24, Z
+ 1ae:	8c 93       	st	X, r24
+			while(!((PINA>>1)&1));
+ 1b0:	e9 e3       	ldi	r30, 0x39	; 57
+ 1b2:	f0 e0       	ldi	r31, 0x00	; 0
+ 1b4:	80 81       	ld	r24, Z
+ 1b6:	86 95       	lsr	r24
+ 1b8:	88 2f       	mov	r24, r24
+ 1ba:	90 e0       	ldi	r25, 0x00	; 0
+ 1bc:	81 70       	andi	r24, 0x01	; 1
+ 1be:	90 70       	andi	r25, 0x00	; 0
+ 1c0:	00 97       	sbiw	r24, 0x00	; 0
+ 1c2:	b1 f3       	breq	.-20     	; 0x1b0 <main+0x12e>
+ 1c4:	b5 cf       	rjmp	.-150    	; 0x130 <main+0xae>
+
+000001c6 <_exit>:
+ 1c6:	f8 94       	cli
+
+000001c8 <__stop_program>:
+ 1c8:	ff cf       	rjmp	.-2      	; 0x1c8 <__stop_program>
