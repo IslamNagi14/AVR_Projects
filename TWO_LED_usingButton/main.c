@@ -15,8 +15,8 @@ typedef unsigned char u8;
 #define PINB	*((volatile u8*)0x36)
 int main()
 {
-	DDRA |=(1<<0); //pin0 in porta is output
-	DDRA |=(1<<1); //pin1 in porta is output
+	DDRA |=(3<<0); //pin(0,1) in porta is output
+	DDRB &=~(7<<0); //pin(0,1,2) in portB is input
 	//PORTA &=~(1<<0);//initialize leds off
 	//PORTA &=~(1<<1);//initialize leds off
     PORTA = 0;
